@@ -1,0 +1,29 @@
+﻿@page "/emails"
+@inject IEmailService EmailService
+@inject NavigationManager NavigationManager
+
+<h3>Emails</h3>
+
+<SfGrid  ID="Grid" DataSource="@EmailService.Emails" AllowPaging="true" AllowFiltering="true" AllowReordering="true" AllowResizing="true" AllowGrouping="true" AllowExcelExport="true" AllowSelection="true"
+              AllowSorting="true" Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Cancel", "Update","ExcelExport","Search"})">        
+        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Normal"></GridEditSettings>
+        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.FilterBar"></GridFilterSettings>
+    <GridPageSettings PageSizes="true"></GridPageSettings>
+	<GridSelectionSettings Type="Syncfusion.Blazor.Grids.SelectionType.Multiple"></GridSelectionSettings>
+        <GridEvents TValue="Email"></GridEvents>
+        <GridColumns>
+            <GridColumn Type='ColumnType.CheckBox' Width="50"></GridColumn>
+            <GridColumn Field=@nameof(Email.Id) HeaderText="ID" IsPrimaryKey="true"  TextAlign="TextAlign.Right" Width="120"></GridColumn>
+            <GridColumn Field=@nameof(Email.Sender) HeaderText="Sender"  Width="120"></GridColumn>
+            <GridColumn Field=@nameof(Email.Subject) HeaderText="Subject" TextAlign="TextAlign.Right" Width="130" Type="ColumnType.Date"></GridColumn>
+            <GridColumn Field=@nameof(Email.DateRecieved) HeaderText="Date recieved"  TextAlign="TextAlign.Right" Width="120"></GridColumn>
+            <GridColumn Field=@nameof(Email.Cc) HeaderText="CC" EditType="EditType.DropDownEdit" Width="150"></GridColumn>
+        </GridColumns>
+</SfGrid>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await EmailService.GetEmails();
+    }
+}
