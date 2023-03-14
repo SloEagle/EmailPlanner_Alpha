@@ -13,5 +13,6 @@ namespace EmailPlanner_Alpha.Shared
         public Priority? Priority { get; set; } = null;
         public User? User { get; set; } = null;
         public Completion? Completion { get; set; } = null;
+        public bool Deleted { get; set; } = false;
     }
 }

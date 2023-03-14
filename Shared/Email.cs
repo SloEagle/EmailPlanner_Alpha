@@ -13,9 +13,9 @@ namespace EmailPlanner_Alpha.Shared
         public string Subject { get; set; } = string.Empty;
         public string Body { get; set; } = string.Empty;
         public DateTime DateRecieved { get; set; } = DateTime.Now;
-        public string Bcc { get; set; } = string.Empty;
-        public string Cc { get; set; } = string.Empty;
-        public int? RepliedToID { get; set; }
+        public string? Bcc { get; set; } = string.Empty;
+        public string? Cc { get; set; } = string.Empty;
+        public int? RepliedToID { get; set; } = null;
         public bool Deleted { get; set; } = false;
     }
 }

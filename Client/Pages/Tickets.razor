@@ -1,0 +1,23 @@
+﻿@page "/tickets"
+@inject ITicketService TicketService
+@inject NavigationManager NavigationManager
+
+<h3>Tickets</h3>
+
+<SfKanban TValue="Ticket" KeyField="Completion.Name" DataSource="TicketService.Tickets">
+    <KanbanColumns>
+        <KanbanColumn HeaderText="Open" KeyField="@(new List<string>() { "Open" })"></KanbanColumn>
+        <KanbanColumn HeaderText="Pending" KeyField="@(new List<string>() { "Pending" })"></KanbanColumn>
+        <KanbanColumn HeaderText="Solved" KeyField="@(new List<string>() { "Solved" })"></KanbanColumn>
+        <KanbanColumn HeaderText="Reopened" KeyField="@(new List<string>() { "Reopened" })"></KanbanColumn>
+        <KanbanColumn HeaderText="On Hold" KeyField="@(new List<string>() { "On Hold" })"></KanbanColumn>
+    </KanbanColumns>
+    <KanbanCardSettings ContentField="Email.Subject" HeaderField="Id" ShowHeader="false"></KanbanCardSettings>
+</SfKanban>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await TicketService.GetTickets();
+    }
+}
