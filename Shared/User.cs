@@ -14,5 +14,7 @@ namespace EmailPlanner_Alpha.Shared
         public string Password { get; set; } = string.Empty;
         public Role? Role { get; set; } = null;
         public Company? Company { get; set; } = null;
+        public bool Visible { get; set; } = true;
+        public bool Deleted { get; set; } = false;
     }
 }

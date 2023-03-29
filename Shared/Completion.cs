@@ -10,6 +10,6 @@ namespace EmailPlanner_Alpha.Shared
     public class Completion
     {
         public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
+        public string? Name { get; set; } = string.Empty;
     }
 }

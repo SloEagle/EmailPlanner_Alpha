@@ -45,7 +45,10 @@ namespace EmailPlanner_Alpha.Server.Services.EmailService
 
         public async Task<ServiceResponse<List<Email>>> GetAdminEmails()
         {
-            var result = await _context.Emails.OrderByDescending(e => e.DateRecieved).ToListAsync();
+            var result = await _context.Emails
+                .Include(e => e.Ticket)
+                .ThenInclude(t => t.Completion)
+                .OrderByDescending(e => e.DateRecieved).ToListAsync();
             return new ServiceResponse<List<Email>>
             {
                 Data = result,
@@ -75,7 +78,10 @@ namespace EmailPlanner_Alpha.Server.Services.EmailService
 
         public async Task<ServiceResponse<List<Email>>> GetEmails()
         {
-            var result = await _context.Emails.Where(e => e.Deleted == false).OrderByDescending(e => e.DateRecieved).ToListAsync();
+            var result = await _context.Emails
+                .Include(e => e.Ticket)
+                .ThenInclude(t => t.Completion)
+                .Where(e => e.Deleted == false).OrderByDescending(e => e.DateRecieved).ToListAsync();
             return new ServiceResponse<List<Email>>
             {
                 Data = result,

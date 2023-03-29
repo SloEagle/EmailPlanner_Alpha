@@ -62,7 +62,7 @@ namespace EmailPlanner_Alpha.Server.Background_Services
                     if (inbox != null)
                     {
                         var message = inbox.GetMessage(inbox.Count - 1);
-                        _context.Emails.Add(new Email { Sender = message.From.ToString(), Subject = message.Subject, Body = message.HtmlBody.ToString(), DateRecieved = message.Date.LocalDateTime });
+                        _context.Emails.Add(new Email { Sender = message.From.ToString(), Subject = message.Subject, Body = message.HtmlBody, DateRecieved = message.Date.LocalDateTime });
                     }
                 }
                 else
@@ -80,7 +80,7 @@ namespace EmailPlanner_Alpha.Server.Background_Services
 
                                 if (message.Date.LocalDateTime > lastEmailDate)
                                 {
-                                    _context.Emails.Add(new Email { Sender = message.From.ToString(), Subject = message.Subject, Body = message.HtmlBody.ToString(), DateRecieved = message.Date.LocalDateTime });
+                                    _context.Emails.Add(new Email { Sender = message.From.ToString(), Subject = message.Subject, Body = message.HtmlBody, DateRecieved = message.Date.LocalDateTime });
                                 }
                                 else
                                 {

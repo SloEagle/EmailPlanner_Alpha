@@ -40,7 +40,6 @@ namespace EmailPlanner_Alpha.Server.Services.TicketService
         public async Task<ServiceResponse<List<Ticket>>> GetAdminTickets()
         {
             var result = await _context.Tickets
-                .Include(t => t.Email)
                 .Include(t => t.Completion)
                 .Include(t => t.Priority)
                 .Include(t => t.User)
@@ -76,7 +75,6 @@ namespace EmailPlanner_Alpha.Server.Services.TicketService
         public async Task<ServiceResponse<List<Ticket>>> GetTickets()
         {
             var result = await _context.Tickets
-                .Include(t => t.Email)
                 .Include(t => t.Completion)
                 .Include(t => t.Priority)
                 .Include(t => t.User)
@@ -101,7 +99,6 @@ namespace EmailPlanner_Alpha.Server.Services.TicketService
             }
             else
             {
-                dbTicket.Email = ticket.Email;
                 dbTicket.Priority = ticket.Priority;
                 dbTicket.User = ticket.User;
                 dbTicket.Completion = ticket.Completion;

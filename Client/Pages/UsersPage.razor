@@ -1,0 +1,30 @@
+﻿@page "/users"
+@inject IUserService UserService
+
+<h3>Users</h3>
+
+<SfGrid ID="Grid" DataSource="@UserService.Users" AllowPaging="true" AllowFiltering="true" AllowReordering="true" AllowResizing="true" AllowGrouping="true" AllowExcelExport="true" AllowSelection="true"
+        AllowSorting="true" Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Cancel", "Update","ExcelExport","Search"})">
+    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Normal"></GridEditSettings>
+    <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.FilterBar"></GridFilterSettings>
+    <GridPageSettings PageSizes="true"></GridPageSettings>
+    <GridSelectionSettings Type="Syncfusion.Blazor.Grids.SelectionType.Multiple"></GridSelectionSettings>
+    <GridEvents TValue="User"></GridEvents>
+    <GridColumns>
+        <GridColumn Type='ColumnType.CheckBox' Width="50"></GridColumn>
+        <GridColumn Field="Id" HeaderText="ID" IsPrimaryKey="true"></GridColumn>
+        <GridColumn Field="Email" HeaderText="Email" IsPrimaryKey="true"></GridColumn>
+        <GridColumn Field="Name" HeaderText="Name" IsPrimaryKey="true"></GridColumn>
+        <GridColumn Field="Password" HeaderText="Password" IsPrimaryKey="true"></GridColumn>
+        <GridColumn Field="Role.Name" HeaderText="Role" IsPrimaryKey="true"></GridColumn>
+        <GridColumn Field="Company.Name" HeaderText="Company" IsPrimaryKey="true"></GridColumn>
+        <GridColumn Field="Visible" HeaderText="Visible" IsPrimaryKey="true"></GridColumn>
+    </GridColumns>
+</SfGrid>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await UserService.GetUsers();
+    }
+}

@@ -1,0 +1,135 @@
+﻿@page "/email-distribution"
+@inject IEmailService EmailService
+@inject ITicketService TicketService
+@inject IUserService UserService
+
+<h3>Email Distribution</h3>
+
+<div class="component-container">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <SfKanban ID="EmailKanban" @ref="EmailKanbanRef" TValue="Email" KeyField="TicketStarted" DataSource="EmailService.Emails" ExternalDropId="@EmailDropId" AllowDragAndDrop="true" Height="50em">
+                    <KanbanColumns>
+                        <KanbanColumn HeaderText="Not distributed" KeyField="@(new List<string>() { "0" })"></KanbanColumn>
+                    </KanbanColumns>
+                    <KanbanCardSettings ContentField="Subject" HeaderField="Id" ShowHeader="false"></KanbanCardSettings>
+                    <KanbanEvents TValue="Email" DragStop="EmailDragStop"></KanbanEvents>
+                </SfKanban>
+            </div>
+            <div class="col-md-6">
+                <SfKanban ID="TicketKanban" @ref="TicketKanbanRef" TValue="Ticket" KeyField="User.Name" DataSource="TicketService.Tickets" ExternalDropId="@TicketDropId" AllowDragAndDrop="true">
+                    <KanbanColumns>
+@*                        <KanbanColumn HeaderText="Jan" KeyField="@(new List<string>() { "Jan" })"></KanbanColumn>
+                        <KanbanColumn HeaderText="Peter" KeyField="@(new List<string>() { "Peter" })"></KanbanColumn>*@
+                        @foreach (var user in UserService.Users)
+                        {
+                            <KanbanColumn HeaderText="@user.Name" KeyField="@(new List<string>() { user.Name })"></KanbanColumn>
+                        }
+                    </KanbanColumns>
+                    <KanbanCardSettings ContentField="User.Id" HeaderField="Id" ShowHeader="false"></KanbanCardSettings>
+                    <KanbanEvents TValue="Ticket" DragStop="TicketDragStop"></KanbanEvents>
+                </SfKanban>
+            </div>
+@*            <div class="col-md-6">
+                <SfKanban ID="UserKanban" @ref="UserKanbanRef" TValue="User" KeyField="Id" DataSource="UserService.Users" ExternalDropId="@UserDropId" AllowDragAndDrop="true">
+                    <KanbanColumns>
+                        <KanbanColumn HeaderText="Jan" KeyField="@(new List<string>() { "1" })"></KanbanColumn>
+                        <KanbanColumn HeaderText="Peter" KeyField="@(new List<string>() { "2" })"></KanbanColumn>
+                    </KanbanColumns>
+                    <KanbanCardSettings ContentField="Name" HeaderField="Id" ShowHeader="false"></KanbanCardSettings>
+                    <KanbanEvents TValue="User" DragStop="UserDragStop"></KanbanEvents>
+                </SfKanban>
+            </div>*@
+        </div>
+    </div>
+</div>
+
+@code {
+    private SfKanban<Email> EmailKanbanRef;
+    private SfKanban<User> UserKanbanRef;
+    private SfKanban<Ticket> TicketKanbanRef;
+    private List<string> EmailDropId = new List<string>() { "#TicketKanban" };
+    private List<string> TicketDropId = new List<string>() { "#EmailKanban" };
+    private List<string> UserDropId = new List<string>() { "#EmailKanban" };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await EmailService.GetAdminEmails();
+        await TicketService.GetAdminTickets();
+        await UserService.GetUsers();
+    }
+
+    private async void EmailDragStop(Syncfusion.Blazor.Kanban.DragEventArgs<Email> args)
+    {
+        if (args.IsExternal)
+        {
+            args.Cancel = true;
+            await EmailKanbanRef.DeleteCardAsync(args.Data);
+            KanbanTargetDetails<Ticket> TicketTargetDetails = await TicketKanbanRef.GetTargetDetailsAsync((int)args.Left, (int)args.Top);
+            List<Ticket> ticketData = new List<Ticket>();
+            int TicketIndex;
+            foreach(Email emailData in args.Data)
+            {
+                if ((TicketTargetDetails != null) && !string.IsNullOrEmpty(TicketTargetDetails.PreviousCardId))
+                {
+                    TicketIndex = TicketTargetDetails.PreviousCardData[0].Id + 1;
+                }
+                else
+                {
+                    TicketIndex = 1;
+                }
+            }
+            ticketData.Add(new Ticket { User = new User { Name = TicketTargetDetails.ColumnKeyField } });
+            await TicketKanbanRef.AddCardAsync(ticketData);
+        }
+    }
+
+    private async void UserDragStop(Syncfusion.Blazor.Kanban.DragEventArgs<User> args)
+    {
+        if (args.IsExternal)
+        {
+            args.Cancel = true;
+            await UserKanbanRef.DeleteCardAsync(args.Data);
+            KanbanTargetDetails<Email> KanbanUserTargetDetails = await EmailKanbanRef.GetTargetDetailsAsync((int)args.Left, (int)args.Top);
+            List<Ticket> ticketData = new List<Ticket>();
+            int UserIndex;
+            foreach (User userData in args.Data)
+            {
+                if ((KanbanUserTargetDetails != null) && !string.IsNullOrEmpty(KanbanUserTargetDetails.PreviousCardId))
+                {
+                    UserIndex = KanbanUserTargetDetails.PreviousCardData[0].Id + 1;
+                }
+                else
+                {
+                    UserIndex = 1;
+                }
+            }
+        }
+    }
+
+    private async void TicketDragStop(Syncfusion.Blazor.Kanban.DragEventArgs<Ticket> args)
+    {
+        //spremeni
+        if (args.IsExternal)
+        {
+            args.Cancel = true;
+            await TicketKanbanRef.DeleteCardAsync(args.Data);
+            KanbanTargetDetails<User> UserTargetDetails = await UserKanbanRef.GetTargetDetailsAsync((int)args.Left, (int)args.Top);
+            List<User> userData = new List<User>();
+            int UserIndex;
+            foreach (Ticket emailData in args.Data)
+            {
+                if ((UserTargetDetails != null) && !string.IsNullOrEmpty(UserTargetDetails.PreviousCardId))
+                {
+                    UserIndex = UserTargetDetails.PreviousCardData[0].Id + 1;
+                }
+                else
+                {
+                    UserIndex = 1;
+                }
+            }
+            await UserKanbanRef.AddCardAsync(userData);
+        }
+    }
+}

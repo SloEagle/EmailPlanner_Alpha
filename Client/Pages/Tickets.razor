@@ -6,6 +6,7 @@
 
 <SfKanban TValue="Ticket" KeyField="Completion.Name" DataSource="TicketService.Tickets">
     <KanbanColumns>
+        <KanbanColumn HeaderText="Not distributed" KeyField="@(new List<string>() { "" })"></KanbanColumn>
         <KanbanColumn HeaderText="Open" KeyField="@(new List<string>() { "Open" })"></KanbanColumn>
         <KanbanColumn HeaderText="Pending" KeyField="@(new List<string>() { "Pending" })"></KanbanColumn>
         <KanbanColumn HeaderText="Solved" KeyField="@(new List<string>() { "Solved" })"></KanbanColumn>

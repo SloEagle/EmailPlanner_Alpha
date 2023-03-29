@@ -17,7 +17,8 @@ namespace EmailPlanner_Alpha.Server.Data
                 new Completion { Id = 2, Name = "Pending" },
                 new Completion { Id = 3, Name = "Solved" },
                 new Completion { Id = 4, Name = "Reopened" },
-                new Completion { Id = 5, Name = "On Hold" }
+                new Completion { Id = 5, Name = "On Hold" },
+                new Completion { Id = 6 }
             );
 
             modelBuilder.Entity<Priority>().HasData(
