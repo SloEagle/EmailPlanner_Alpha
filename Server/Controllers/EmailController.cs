@@ -1,11 +1,13 @@
-﻿using EmailPlanner_Alpha.Shared;
+﻿using EmailPlanner_Alpha.Server.Services.UserService;
+using EmailPlanner_Alpha.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmailPlanner_Alpha.Server.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+    [ApiController, Authorize]
     public class EmailController : ControllerBase
     {
         private readonly IEmailService _emailService;
@@ -22,7 +24,7 @@ namespace EmailPlanner_Alpha.Server.Controllers
             return Ok(result);
         }
 
-        [HttpGet("admin")]
+        [HttpGet("admin"), Authorize(Roles = "Admin")]
         public async Task<ActionResult<ServiceResponse<List<Email>>>> GetAdminEmails()
         {
             var result = await _emailService.GetAdminEmails();

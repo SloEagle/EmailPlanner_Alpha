@@ -5,10 +5,12 @@ namespace EmailPlanner_Alpha.Server.Services.UserService
     public class UserService : IUserService
     {
         private readonly DataContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserService(DataContext context)
+        public UserService(DataContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<ServiceResponse<List<User>>> AddUser(User user)
@@ -36,6 +38,17 @@ namespace EmailPlanner_Alpha.Server.Services.UserService
                 await _context.SaveChangesAsync();
                 return new ServiceResponse<List<User>> { Success = true };
             }
+        }
+
+        public string GetMyName()
+        {
+            var result = string.Empty;
+            if(_httpContextAccessor.HttpContext != null)
+            {
+                result = _httpContextAccessor.HttpContext.User?.Identity?.Name;
+            }
+
+            return result;
         }
 
         public async Task<ServiceResponse<User>> GetUserById(int id)
@@ -91,7 +104,7 @@ namespace EmailPlanner_Alpha.Server.Services.UserService
             {
                 dbUser.Email = user.Email;
                 dbUser.Name = user.Name;
-                dbUser.Password = user.Password;
+                dbUser.PasswordHash = user.PasswordHash;
                 dbUser.Role = user.Role;
                 dbUser.Company = user.Company;
                 dbUser.Deleted = user.Deleted;
